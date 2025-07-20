@@ -11,21 +11,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
+    primary = Green,
     secondary = PurpleGrey80,
     tertiary = Pink80,
     surface = GrayLight,
     surfaceContainerLow = GrayMid,
-    surfaceContainerHigh = White100
+    surfaceContainerHigh = White100,
+    onError = Red
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
+    primary = Green,
     secondary = PurpleGrey40,
     tertiary = Pink40,
     surface = GrayLight,
     surfaceContainerLow = GrayMid,
-    surfaceContainerHigh = White100
+    surfaceContainerHigh = White100,
+    onError = Red
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -42,7 +44,7 @@ private val LightColorScheme = lightColorScheme(
 fun BatteryIndicatorTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
