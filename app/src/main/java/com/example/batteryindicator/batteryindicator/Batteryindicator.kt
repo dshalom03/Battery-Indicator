@@ -110,19 +110,17 @@ fun TabIndicatorScope(modifier: Modifier = Modifier) {
             }
             drawPath(path, color = Color.LightGray)
 
-            val cellWidth = (width / 8f) - 6.dp.dpToPx(density)
-            val cellHeight = height * 0.85f
-            var xOffset = 0f
+            val cellWidth = (width / 8f) - 2.dp.dpToPx(density)
+            val cellHeight = height * 0.9f
+            var xOffset = 1.dp.dpToPx(density)
 
 
             (0 until 8).forEach { i ->
-
                 val cellPath = Path().apply {
-
                     addRoundRect(
                         RoundRect(
                             rect = Rect(
-                                offset = Offset(xOffset, 10f),
+                                offset = Offset(xOffset, height * 0.05f),
                                 size = Size(cellWidth, cellHeight),
                             ),
                             bottomLeft = cornerRadius,
