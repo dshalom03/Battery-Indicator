@@ -1,5 +1,6 @@
 package com.example.batteryindicator.batteryindicator
 
+import androidx.annotation.IntRange
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -28,9 +29,12 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.batteryindicator.R
 import com.example.batteryindicator.ui.theme.BatteryIndicatorTheme
+import org.jetbrains.annotations.Range
 
 @Composable
-fun BatteryIndicator(modifier: Modifier = Modifier) {
+fun BatteryIndicator(modifier: Modifier = Modifier, @IntRange (from = 0, to = 100) progress :  Int) {
+
+    println(progress)
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -152,6 +156,6 @@ fun BatteryIndicatorPreview(modifier: Modifier = Modifier) {
 
     BatteryIndicatorTheme {
 
-        BatteryIndicator(modifier = Modifier.fillMaxWidth())
+        BatteryIndicator(modifier = Modifier.fillMaxWidth(), progress = 100)
     }
 }

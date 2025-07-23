@@ -28,7 +28,8 @@ class MainActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Center){
 
                         BatteryIndicator(
-                            modifier = Modifier.fillMaxWidth().padding(innerPadding)
+                            modifier = Modifier.fillMaxWidth().padding(innerPadding),
+                            progress = 55
                         )
                     }
 
