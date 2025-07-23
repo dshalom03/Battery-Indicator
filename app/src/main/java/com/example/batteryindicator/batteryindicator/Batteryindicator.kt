@@ -32,9 +32,8 @@ import com.example.batteryindicator.ui.theme.BatteryIndicatorTheme
 import org.jetbrains.annotations.Range
 
 @Composable
-fun BatteryIndicator(modifier: Modifier = Modifier, @IntRange (from = 0, to = 100) progress :  Int) {
+fun BatteryIndicator(modifier: Modifier = Modifier, @IntRange(from = 0, to = 100) progress: Int) {
 
-    println(progress)
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -49,7 +48,7 @@ fun BatteryIndicator(modifier: Modifier = Modifier, @IntRange (from = 0, to = 10
             modifier = Modifier.padding(end = 8.dp)
         )
 
-        Indicator(modifier = Modifier.weight(1f))
+        Indicator(modifier = Modifier.weight(1f), progress)
 
         Icon(
             painter = painterResource(R.drawable.clover),
@@ -61,8 +60,18 @@ fun BatteryIndicator(modifier: Modifier = Modifier, @IntRange (from = 0, to = 10
     }
 }
 
+private fun cellColor(progress: Int): Color = if (progress <= 20) {
+    Color.Red
+} else if (progress <= 50) {
+    Color.Yellow
+} else {
+    Color.Green
+}
+
 @Composable
-fun Indicator(modifier: Modifier = Modifier) {
+fun Indicator(modifier: Modifier = Modifier, progress: Int) {
+
+    val cellColor = cellColor(progress)
 
     Box(modifier = modifier.fillMaxHeight()) {
 
@@ -111,7 +120,8 @@ fun Indicator(modifier: Modifier = Modifier) {
                     cellWidth = cellWidth,
                     cellHeight = cellHeight,
                     xOffset = xOffset,
-                    yOffset = yOffset
+                    yOffset = yOffset,
+                    color = cellColor
                 )
                 xOffset += (width / cellCount)
             }
