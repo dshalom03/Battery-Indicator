@@ -111,20 +111,21 @@ fun TabIndicatorScope(modifier: Modifier = Modifier) {
             }
             drawPath(path, color = Color.LightGray)
 
-            val cellWidth = (width / 8f) - 2.dp.dpToPx(density)
             val cellHeight = height * 0.9f
             var xOffset = 1.dp.dpToPx(density)
-            var yOffset = height * 0.05f
+            val yOffset = height * 0.05f
+            val cellCount = 4
 
+            (0 until cellCount).forEach { i ->
+                val cellWidth = (width / cellCount) - 2.dp.dpToPx(density)
 
-            (0 until 8).forEach { i ->
                 drawCell(
                     cellWidth = cellWidth,
                     cellHeight = cellHeight,
                     xOffset = xOffset,
                     yOffset = yOffset
                 )
-                xOffset += (width / 8f)
+                xOffset += (width / cellCount)
             }
         }
 
