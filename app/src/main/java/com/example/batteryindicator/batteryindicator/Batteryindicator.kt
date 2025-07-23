@@ -28,8 +28,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.batteryindicator.R
 import com.example.batteryindicator.ui.theme.BatteryIndicatorTheme
@@ -70,13 +74,16 @@ fun BatteryIndicator(modifier: Modifier = Modifier) {
 
 @Composable
 fun TabIndicatorScope(modifier: Modifier = Modifier) {
+
     Box(modifier = modifier.fillMaxHeight()) {
+
+        val density = LocalDensity.current.density
+        val cornerRadius = CornerRadius(5.dp.dpToPx(density), 10f)
 
         Canvas(modifier = Modifier.fillMaxSize()) {
             val width = size.width
             val height = size.height
 
-            val cornerRadius = CornerRadius(10f, 10f)
             val path = Path().apply {
                 addRoundRect(
                     RoundRect(
@@ -101,7 +108,35 @@ fun TabIndicatorScope(modifier: Modifier = Modifier) {
                     )
                 )
             }
-            drawPath(path, color = Color.White)
+            drawPath(path, color = Color.LightGray)
+
+            val cellWidth = (width / 8f) - 6.dp.dpToPx(density)
+            val cellHeight = height * 0.85f
+            var xOffset = 0f
+
+
+            (0 until 8).forEach { i ->
+
+                val cellPath = Path().apply {
+
+                    addRoundRect(
+                        RoundRect(
+                            rect = Rect(
+                                offset = Offset(xOffset, 10f),
+                                size = Size(cellWidth, cellHeight),
+                            ),
+                            bottomLeft = cornerRadius,
+                            bottomRight = cornerRadius,
+                            topLeft = cornerRadius,
+                            topRight = cornerRadius
+                        )
+                    )
+                }
+                drawPath(cellPath, color = Color.Red)
+
+                xOffset += (width / 8f)
+            }
+
 
         }
 
@@ -109,6 +144,11 @@ fun TabIndicatorScope(modifier: Modifier = Modifier) {
     }
 
 }
+
+internal fun Dp.dpToPx(density: Float): Float {
+    return this.value * density
+}
+
 
 @Preview()
 @Composable
