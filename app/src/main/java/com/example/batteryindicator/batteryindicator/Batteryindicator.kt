@@ -26,6 +26,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
@@ -113,34 +114,46 @@ fun TabIndicatorScope(modifier: Modifier = Modifier) {
             val cellWidth = (width / 8f) - 2.dp.dpToPx(density)
             val cellHeight = height * 0.9f
             var xOffset = 1.dp.dpToPx(density)
+            var yOffset = height * 0.05f
 
 
             (0 until 8).forEach { i ->
-                val cellPath = Path().apply {
-                    addRoundRect(
-                        RoundRect(
-                            rect = Rect(
-                                offset = Offset(xOffset, height * 0.05f),
-                                size = Size(cellWidth, cellHeight),
-                            ),
-                            bottomLeft = cornerRadius,
-                            bottomRight = cornerRadius,
-                            topLeft = cornerRadius,
-                            topRight = cornerRadius
-                        )
-                    )
-                }
-                drawPath(cellPath, color = Color.Red)
-
+                drawCell(
+                    cellWidth = cellWidth,
+                    cellHeight = cellHeight,
+                    xOffset = xOffset,
+                    yOffset = yOffset
+                )
                 xOffset += (width / 8f)
             }
-
-
         }
 
-
     }
+}
 
+fun DrawScope.drawCell(
+    cellWidth: Float,
+    cellHeight: Float,
+    xOffset: Float,
+    yOffset: Float,
+    color: Color = Color.Red,
+    cornerRadius: CornerRadius = CornerRadius(5.dp.dpToPx(density), 10f)
+) {
+    val cellPath = Path().apply {
+        addRoundRect(
+            RoundRect(
+                rect = Rect(
+                    offset = Offset(xOffset, yOffset),
+                    size = Size(cellWidth, cellHeight),
+                ),
+                bottomLeft = cornerRadius,
+                bottomRight = cornerRadius,
+                topLeft = cornerRadius,
+                topRight = cornerRadius
+            )
+        )
+    }
+    drawPath(cellPath, color = color)
 }
 
 internal fun Dp.dpToPx(density: Float): Float {
