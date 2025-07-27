@@ -111,10 +111,12 @@ fun Indicator(modifier: Modifier = Modifier, progress: Int) {
             val cellHeight = height * 0.9f
             var xOffset = 1.dp.dpToPx(density)
             val yOffset = height * 0.05f
-            val cellCount = 4
 
-            (0 until cellCount).forEach { i ->
-                val cellWidth = (width / cellCount) - 2.dp.dpToPx(density)
+            val wholeCells = progress /20
+            val halfCells = (progress % 20)/10
+
+            (0 until wholeCells).forEach { i ->
+                val cellWidth = (width / 5) - 2.dp.dpToPx(density)
 
                 drawCell(
                     cellWidth = cellWidth,
@@ -123,7 +125,20 @@ fun Indicator(modifier: Modifier = Modifier, progress: Int) {
                     yOffset = yOffset,
                     color = cellColor
                 )
-                xOffset += (width / cellCount)
+                xOffset += (width / 5)
+            }
+
+            (0 until halfCells).forEach { i ->
+                val cellWidth = (width / 10) - 2.dp.dpToPx(density)
+
+                drawCell(
+                    cellWidth = cellWidth,
+                    cellHeight = cellHeight,
+                    xOffset = xOffset,
+                    yOffset = yOffset,
+                    color = cellColor
+                )
+                xOffset += (width / 10)
             }
         }
 
@@ -166,6 +181,6 @@ fun BatteryIndicatorPreview(modifier: Modifier = Modifier) {
 
     BatteryIndicatorTheme {
 
-        BatteryIndicator(modifier = Modifier.fillMaxWidth(), progress = 100)
+        BatteryIndicator(modifier = Modifier.fillMaxWidth(), progress = 35)
     }
 }
