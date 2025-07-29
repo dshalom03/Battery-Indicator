@@ -1,6 +1,8 @@
 package com.example.batteryindicator.batteryindicator
 
 import androidx.annotation.IntRange
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -12,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
@@ -22,6 +26,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -34,6 +39,24 @@ import org.jetbrains.annotations.Range
 @Composable
 fun BatteryIndicator(modifier: Modifier = Modifier, @IntRange(from = 0, to = 100) progress: Int) {
 
+    val heartAnimatedScale by animateFloatAsState(
+        targetValue = if (progress <= 20) 1.05f else if (progress >= 80) 0.95f else 1f,
+        label = "scale"
+    )
+
+    val heartColor by animateColorAsState(
+        targetValue = if (progress <= 20f) MaterialTheme.colorScheme.onError else Color.LightGray
+    )
+
+    val cloverAnimatedScale by animateFloatAsState(
+        targetValue = if (progress <= 20) 1.05f else if (progress >= 80) 0.95f else 1f,
+        label = "scale"
+    )
+
+    val cloverColor by animateColorAsState(
+        targetValue = if (progress <= 20f) Color.LightGray else MaterialTheme.colorScheme.primary
+    )
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -43,9 +66,14 @@ fun BatteryIndicator(modifier: Modifier = Modifier, @IntRange(from = 0, to = 100
     ) {
         Icon(
             painter = painterResource(R.drawable.heart),
-            tint = MaterialTheme.colorScheme.onError,
+            tint = heartColor,
             contentDescription = null,
-            modifier = Modifier.padding(end = 8.dp)
+            modifier = Modifier
+                .padding(end = 8.dp)
+                .graphicsLayer(
+                    scaleX = heartAnimatedScale,
+                    scaleY = heartAnimatedScale
+                )
         )
 
         Indicator(modifier = Modifier.weight(1f), progress)
@@ -53,8 +81,13 @@ fun BatteryIndicator(modifier: Modifier = Modifier, @IntRange(from = 0, to = 100
         Icon(
             painter = painterResource(R.drawable.clover),
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(start = 8.dp)
+            tint = cloverColor,
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .graphicsLayer(
+                    scaleX = cloverAnimatedScale,
+                    scaleY = cloverAnimatedScale
+                )
 
         )
     }
@@ -112,8 +145,8 @@ fun Indicator(modifier: Modifier = Modifier, progress: Int) {
             var xOffset = 1.dp.dpToPx(density)
             val yOffset = height * 0.05f
 
-            val wholeCells = progress /20
-            val halfCells = (progress % 20)/10
+            val wholeCells = progress / 20
+            val halfCells = (progress % 20) / 10
 
             (0 until wholeCells).forEach { i ->
                 val cellWidth = (width / 5) - 2.dp.dpToPx(density)
