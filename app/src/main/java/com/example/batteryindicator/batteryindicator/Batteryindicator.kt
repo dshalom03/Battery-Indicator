@@ -35,10 +35,13 @@ import androidx.compose.ui.unit.dp
 import com.example.batteryindicator.R
 import com.example.batteryindicator.ui.theme.BatteryIndicatorTheme
 import org.jetbrains.annotations.Range
+import org.koin.compose.koinInject
 
 @Composable
 fun BatteryIndicator(modifier: Modifier = Modifier, @IntRange(from = 0, to = 100) progress: Int) {
 
+    val batteryIndicatorViewModel = koinInject<BatteryIndicatorViewModel>()
+    batteryIndicatorViewModel.doit()
     val heartAnimatedScale by animateFloatAsState(
         targetValue = if (progress <= 20) 1.05f else if (progress >= 80) 0.95f else 1f,
         label = "scale"
