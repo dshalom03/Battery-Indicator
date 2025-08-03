@@ -19,9 +19,7 @@ class BatteryMonitorImpl(val context: Context) : BatteryMonitor {
         callbackFlow {
             val receiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
-                    // Handle battery updates here
-
-                    val batteryLevel: Float? = intent?.let { intent ->
+                    val batteryLevel: Float? = intent.let { intent ->
                         val level: Int = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
                         val scale: Int = intent.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
                         level * 100 / scale.toFloat()

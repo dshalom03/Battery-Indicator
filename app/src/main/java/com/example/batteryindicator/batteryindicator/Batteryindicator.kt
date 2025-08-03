@@ -54,7 +54,7 @@ fun BatteryIndicator(modifier: Modifier = Modifier) {
     )
 
     val cloverAnimatedScale by animateFloatAsState(
-        targetValue = if (progress <= 20) 1.05f else if (progress >= 80) 0.95f else 1f,
+        targetValue = if (progress >= 80) 1.05f else if (progress <= 20) 0.95f else 1f,
         label = "scale"
     )
 
@@ -147,14 +147,14 @@ fun Indicator(modifier: Modifier = Modifier, progress: Int) {
             drawPath(path, color = Color.LightGray)
 
             val cellHeight = height * 0.9f
-            var xOffset = 1.dp.dpToPx(density)
+            var xOffset = 2.dp.dpToPx(density)
             val yOffset = height * 0.05f
 
             val wholeCells = progress / 20
             val halfCells = (progress % 20) / 10
 
             (0 until wholeCells).forEach { i ->
-                val cellWidth = (width / 5) - 2.dp.dpToPx(density)
+                val cellWidth = (width / 5) - 4.dp.dpToPx(density)
 
                 drawCell(
                     cellWidth = cellWidth,

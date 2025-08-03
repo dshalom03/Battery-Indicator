@@ -31,9 +31,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        // Register the broadcast receiver to listen for battery changes
-        val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-        registerReceiver(null, filter)
 
         setContent {
 
@@ -43,8 +40,6 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         verticalArrangement = Arrangement.Center
                     ) {
-
-
                         BatteryIndicator(
                             modifier = Modifier
                                 .fillMaxWidth()
