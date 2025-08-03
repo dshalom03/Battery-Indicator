@@ -7,19 +7,15 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 interface BatteryMonitor {
-
-    suspend fun observeBatteryLevel(context: Context): Flow<Float>
+    suspend fun observeBatteryLevel(): Flow<Float>
 }
 
-class BatteryMonitorImpl : BatteryMonitor {
-    override suspend fun observeBatteryLevel(context: Context): Flow<Float> =
+class BatteryMonitorImpl(val context: Context) : BatteryMonitor {
+    override suspend fun observeBatteryLevel(): Flow<Float> =
         callbackFlow {
             val receiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
@@ -41,8 +37,6 @@ class BatteryMonitorImpl : BatteryMonitor {
                 ContextCompat.RECEIVER_NOT_EXPORTED
             )
             awaitClose { context.unregisterReceiver(receiver) }
-
-
         }
 
 }

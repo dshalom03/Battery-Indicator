@@ -32,16 +32,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.batteryindicator.R
 import com.example.batteryindicator.ui.theme.BatteryIndicatorTheme
 import org.jetbrains.annotations.Range
 import org.koin.compose.koinInject
 
 @Composable
-fun BatteryIndicator(modifier: Modifier = Modifier, @IntRange(from = 0, to = 100) progress: Int) {
+fun BatteryIndicator(modifier: Modifier = Modifier) {
 
     val batteryIndicatorViewModel = koinInject<BatteryIndicatorViewModel>()
-    batteryIndicatorViewModel.doit()
+    val progress by batteryIndicatorViewModel.state.collectAsStateWithLifecycle()
+
     val heartAnimatedScale by animateFloatAsState(
         targetValue = if (progress <= 20) 1.05f else if (progress >= 80) 0.95f else 1f,
         label = "scale"
@@ -79,7 +81,7 @@ fun BatteryIndicator(modifier: Modifier = Modifier, @IntRange(from = 0, to = 100
                 )
         )
 
-        Indicator(modifier = Modifier.weight(1f), progress)
+        Indicator(modifier = Modifier.weight(1f), progress.toInt())
 
         Icon(
             painter = painterResource(R.drawable.clover),
@@ -217,6 +219,6 @@ fun BatteryIndicatorPreview(modifier: Modifier = Modifier) {
 
     BatteryIndicatorTheme {
 
-        BatteryIndicator(modifier = Modifier.fillMaxWidth(), progress = 35)
+        BatteryIndicator(modifier = Modifier.fillMaxWidth())
     }
 }

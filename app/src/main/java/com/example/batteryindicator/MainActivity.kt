@@ -31,42 +31,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        val batteryMonitor: BatteryMonitor = BatteryMonitorImpl()
-
-
-
-        lifecycleScope.launch {
-
-
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                batteryMonitor.observeBatteryLevel(applicationContext).distinctUntilChanged().collect { batteryLevel ->
-                    println("dsds battery level : $batteryLevel")
-                }
-            }
-        }
-
         // Register the broadcast receiver to listen for battery changes
         val filter = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
         registerReceiver(null, filter)
 
         setContent {
-
-
-            var batterLevel by remember { mutableFloatStateOf(0.0f) }
-
-
-            LaunchedEffect(Unit) {
-                lifecycleScope.launch {
-
-
-                    repeatOnLifecycle(Lifecycle.State.STARTED) {
-                        batteryMonitor.observeBatteryLevel(applicationContext).distinctUntilChanged().collect { bl ->
-                            batterLevel=bl
-                        }
-                    }
-                }
-            }
 
             BatteryIndicatorTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
@@ -80,7 +49,6 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(innerPadding),
-                            progress = batterLevel.toInt()
                         )
                     }
 
