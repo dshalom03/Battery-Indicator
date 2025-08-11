@@ -1,8 +1,11 @@
 package com.example.batteryindicator.batteryindicator
 
-import androidx.annotation.IntRange
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -15,9 +18,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
@@ -35,7 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.batteryindicator.R
 import com.example.batteryindicator.ui.theme.BatteryIndicatorTheme
-import org.jetbrains.annotations.Range
 import org.koin.compose.koinInject
 
 @Composable
@@ -43,11 +45,6 @@ fun BatteryIndicator(modifier: Modifier = Modifier) {
 
     val batteryIndicatorViewModel = koinInject<BatteryIndicatorViewModel>()
     val progress by batteryIndicatorViewModel.state.collectAsStateWithLifecycle()
-
-    val heartAnimatedScale by animateFloatAsState(
-        targetValue = if (progress <= 20) 1.05f else if (progress >= 80) 0.95f else 1f,
-        label = "scale"
-    )
 
     val heartColor by animateColorAsState(
         targetValue = if (progress <= 20f) MaterialTheme.colorScheme.onError else Color.LightGray
@@ -75,14 +72,19 @@ fun BatteryIndicator(modifier: Modifier = Modifier) {
             contentDescription = null,
             modifier = Modifier
                 .padding(end = 8.dp)
-                .graphicsLayer(
-                    scaleX = heartAnimatedScale,
-                    scaleY = heartAnimatedScale
+                .conditional(
+                    progress <= 20f,
+                    ifTrue = {
+                        pulse(500)
+                    }
                 )
+
         )
 
-        Indicator(modifier = Modifier.weight(1f), progress.toInt())
 
+        Indicator(
+            modifier = Modifier.weight(1f), progress.toInt()
+        )
         Icon(
             painter = painterResource(R.drawable.clover),
             contentDescription = null,
@@ -95,6 +97,33 @@ fun BatteryIndicator(modifier: Modifier = Modifier) {
                 )
 
         )
+    }
+}
+
+inline fun Modifier.conditional(
+    predicate: Boolean,
+    ifTrue: Modifier.() -> Modifier,
+    ifFalse: Modifier.() -> Modifier = { this },
+): Modifier = if (predicate) {
+    ifTrue(this)
+} else {
+    ifFalse(this)
+}
+
+@Composable
+fun Modifier.pulse(duration: Int) = composed {
+    val transition = rememberInfiniteTransition()
+    val pulseRation by transition.animateFloat(
+        initialValue = 0.9f,
+        targetValue = 1.1f,
+        label = "pulse",
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = duration)
+        )
+    )
+    graphicsLayer {
+        scaleX = pulseRation
+        scaleY = pulseRation
     }
 }
 
@@ -153,8 +182,11 @@ fun Indicator(modifier: Modifier = Modifier, progress: Int) {
             val wholeCells = progress / 20
             val halfCells = (progress % 20) / 10
 
+
             (0 until wholeCells).forEach { i ->
                 val cellWidth = (width / 5) - 4.dp.dpToPx(density)
+
+
 
                 drawCell(
                     cellWidth = cellWidth,
@@ -164,7 +196,9 @@ fun Indicator(modifier: Modifier = Modifier, progress: Int) {
                     color = cellColor
                 )
                 xOffset += (width / 5)
+
             }
+
 
             (0 until halfCells).forEach { i ->
                 val cellWidth = (width / 10) - 2.dp.dpToPx(density)
@@ -177,10 +211,15 @@ fun Indicator(modifier: Modifier = Modifier, progress: Int) {
                     color = cellColor
                 )
                 xOffset += (width / 10)
+
             }
+
+
         }
 
+
     }
+
 }
 
 fun DrawScope.drawCell(
